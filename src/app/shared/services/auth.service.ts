@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { User } from '../../shared/services/user';
-import { auth } from 'firebase/app';
+import { firebase } from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
@@ -29,5 +29,17 @@ export class AuthService {
         JSON.parse(localStorage.getItem('user'));
       }
     });
+  }
+  // Sign in with email/password
+  SignIn(email, password) {
+    return this.afAuth.signInWithEmailAndPassword(email, password)
+      .then((result) => {
+        this.ngZone.run(() => {
+          this.router.navigate(['dashboard']);
+        });
+        this.SetUserData(result.user);
+      }).catch((error) => {
+        window.alert(error.message)
+      });
   }
 }
